@@ -1,215 +1,270 @@
 const prompt = require('prompt-sync')()
 const colors = require('colors')
 
+// Variáveis de estado do jogo
+let nome = ''
 let pontos = 0
+let inventario = []
 
-// ================= INTRO =================
-function introducao() {
-    console.log("\n====================================".cyan)
-    console.log("     OPERAÇÃO SOMBRA 🕵️".cyan)
-    console.log("====================================\n".cyan)
+// ============================================================
+// BANNERS
+// ============================================================
 
-    console.log("Em um mundo onde dados valem mais que dinheiro...".yellow)
-    console.log("Jorgin é apenas um estagiário...")
-    console.log("Mas hoje tudo muda...\n")
-
-    console.log('"Você viu demais..."'.red)
-    console.log('"Não confie em ninguém..."'.yellow)
-
-    console.log("\nUm grupo chamado SOMBRA entrou em contato...\n".cyan)
+function bannerInicio() {
+  console.log('\n')
+  console.log('#################################################'.cyan.bold)
+  console.log('#                                               #'.cyan.bold)
+  console.log('#          ██████  ██████  ███████ ██████       #'.cyan.bold)
+  console.log('#         ██    ██ ██   ██ ██      ██   ██      #'.cyan.bold)
+  console.log('#         ██    ██ ██████  █████   ██████       #'.cyan.bold)
+  console.log('#         ██    ██ ██      ██      ██   ██      #'.cyan.bold)
+  console.log('#          ██████  ██      ███████ ██   ██      #'.cyan.bold)
+  console.log('#                                               #'.cyan.bold)
+  console.log('#         *** OPERAÇÃO SOMBRA ***               #'.yellow.bold)
+  console.log('#      Um hacker. Uma missão. Sem volta.        #'.white)
+  console.log('#                                               #'.cyan.bold)
+  console.log('#################################################'.cyan.bold)
+  console.log('\n')
 }
 
-// ================= MENU =================
+function bannerVitoria() {
+  console.log('\n')
+  console.log('*************************************************'.green.bold)
+  console.log('*                                               *'.green.bold)
+  console.log('*        !!! VITÓRIA: O MUNDO NUNCA            *'.green.bold)
+  console.log('*            MAIS SERÁ O MESMO !!!             *'.green.bold)
+  console.log('*                                               *'.green.bold)
+  console.log('*    🛰️  MISSÃO CUMPRIDA — NASA HACKEADA! 🛰️     *'.yellow.bold)
+  console.log('*   Os servidores mais seguros do mundo foram   *'.white)
+  console.log('*   invadidos. O mundo nunca será o mesmo...    *'.white)
+  console.log('*                                               *'.green.bold)
+  console.log('*************************************************'.green.bold)
+  console.log('\n')
+}
+
+function bannerDerrota() {
+  console.log('\n')
+  console.log('X'.repeat(42).red.bold)
+  console.log('   GAME OVER: O PREÇO DA CURIOSIDADE   '.red.bold)
+  console.log('X'.repeat(42).red.bold)
+  console.log('\n' + 'TRACE COMPLETE. AUTHORITIES NOTIFIED.'.bgRed.white)
+  console.log('\n')
+}
+
+function bannerParte2() {
+  console.log('\n')
+  console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'.magenta.bold)
+  console.log('~                                               ~'.magenta.bold)
+  console.log('~      DESBLOQUEIO: CAPÍTULO 2 - A FUGA        ~'.yellow.bold)
+  console.log('~           *** A PERSEGUIÇÃO ***               ~'.yellow.bold)
+  console.log('~                                               ~'.magenta.bold)
+  console.log('~   Depois de hackear a NASA, o governo está    ~'.white)
+  console.log('~   na sua cola. Agentes da CIA, FBI e NSA      ~'.white)
+  console.log('~   foram mobilizados. Você tem 48 horas        ~'.white)
+  console.log('~   para desaparecer... ou será encontrado.     ~'.white)
+  console.log('~                                               ~'.magenta.bold)
+  console.log('~        Fuja. Esconda-se. Sobreviva.           ~'.yellow.bold)
+  console.log('~            (EM DESENVOLVIMENTO)               ~'.yellow.italic)
+  console.log('~                                               ~'.magenta.bold)
+  console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'.magenta.bold)
+  console.log('\n')
+}
+
+// ============================================================
+// MENU E CONTROLE
+// ============================================================
+
 function menuPrincipal() {
-    console.log('\n=== MENU PRINCIPAL ==='.cyan)
-    console.log('1. Jogar')
-    console.log('2. Sair')
-
-    let opcao = prompt('Escolha: ')
-
-    switch (opcao) {
-        case '1':
-            iniciarJogo()
-            break
-        case '2':
-            sair()
-            break
-    }
+  bannerInicio()
+  console.log('=== OPERAÇÃO SOMBRA ==='.cyan.bold)
+  console.log('1. Jogar')
+  console.log('2. Sair')
+  let opcao = prompt('Escolha: ')
+  switch (opcao) {
+    case '1':
+      iniciarJogo()
+      break
+    case '2':
+      sair()
+      break
+  }
 }
 
-// ================= INICIAR =================
 function iniciarJogo() {
-    pontos = 0
-    introducao()
-    encontroArquivo()
+  pontos = 0
+  inventario = []
+  nome = prompt('Qual o nome do seu hacker? ')
+  console.log(`\nBem vindo, ${nome}! Boa sorte...`.cyan)
+  encontroArquivo()
 }
 
-// ================= SAIR =================
 function sair() {
-    console.log("Encerrando o jogo...".red)
-    process.exit()
+  console.log('Encerrando o jogo...')
+  process.exit()
 }
 
-// ================= GAME OVER =================
 function gameOver() {
-    console.log("\n💀 Jorgin foi capturado!".red)
-    console.log("1. Tentar novamente")
-    console.log("2. Sair")
-
-    let opcao = prompt("Escolha: ")
-
-    if (opcao === '1') {
-        pontos = 0
-        menuPrincipal()
-    } else {
-        sair()
-    }
+  bannerDerrota()
+  console.log(`${nome} foi levado para uma sala sem janelas. O estágio acabou.`)
+  console.log('\n1. Tentar novamente')
+  console.log('2. Sair')
+  let opcao = prompt('Escolha: ')
+  if (opcao === '1') {
+    pontos = 0
+    menuPrincipal()
+  } else {
+    sair()
+  }
 }
 
-// ================= CENA 1 =================
+// ============================================================
+// CENAS
+// ============================================================
+
 function encontroArquivo() {
-    console.log("\n=== CENA 1 ===".cyan)
-    console.log("Arquivo misterioso encontrado...")
+  console.log('\n' + '=== CENA 1: O DESLIZE NO SERVIDOR ==='.bold.cyan)
+  console.log(`Enquanto limpava diretórios antigos, ${nome.yellow} encontra o arquivo '_voyager_internal_leak.dat'.`)
+  console.log('O ícone pisca em ' + 'verde neon'.green + ' e a data de modificação é de... ' + 'AGORA'.bold.red + '.')
+  console.log('\n1. Abrir o arquivo ' + '(A curiosidade é maior que o medo)'.italic)
+  console.log('2. Ignorar e sair ' + '(Escolher a mediocridade)'.italic)
+  console.log('3. Tentar a sorte ' + '(Fechar os olhos e apertar Enter)'.italic)
 
-    console.log("1. Abrir")
-    console.log("2. Ignorar")
-    console.log("3. Tentar sorte")
-
-    let opcao = prompt("Escolha: ")
-
-    switch (opcao) {
-        case '1':
-            pontos++
-            console.log("✅ Arquivo aberto! +1 ponto".green)
-            grupoSombra()
-            break
-
-        case '2':
-            console.log("❌ Você ignorou tudo".red)
-            gameOver()
-            break
-
-        case '3':
-            let sorte = Math.random() * 2
-            if (sorte > 1) {
-                pontos++
-                console.log("🍀 Sorte! +1 ponto".green)
-                grupoSombra()
-            } else {
-                pontos--
-                console.log("💀 Azar!".red)
-                gameOver()
-            }
-            break
-    }
+  let opcao = prompt('O que você faz? ')
+  switch (opcao) {
+    case '1':
+      pontos++
+      inventario.push('Arquivo Secreto')
+      console.log(`\n${nome} executou o comando 'cat'. A tela rola com segredos da NASA! `.green + '+1 ponto'.bold.green)
+      grupoSombra()
+      break
+    case '2':
+      console.log(`\nVocê desliga o monitor, mas sente olhos nas suas costas. Seu estágio acabou aqui.`.red)
+      gameOver()
+      break
+    case '3':
+      if (Math.random() * 2 > 1) {
+        pontos++
+        console.log('\nSorte! '.green.bold + 'O script de segurança falhou e o arquivo abriu sozinho! ' + '+1 ponto'.green)
+        grupoSombra()
+      } else {
+        pontos--
+        console.log('\nAzar! '.red.bold + 'O alarme do CPD começou a tocar alto demais!')
+        gameOver()
+      }
+      break
+  }
 }
 
-// ================= CENA 2 =================
 function grupoSombra() {
-    console.log("\n=== CENA 2 ===".cyan)
+  console.log('\n' + '=== CENA 2: O GRUPO SOMBRA ==='.bold.cyan)
+  console.log('O cursor se move sozinho: ' + '"Vimos o que você achou. A NASA está vindo. Quer ajuda?"'.green.italic)
+  console.log('\n1. Responder o contato ' + '("Quem são vocês?")'.italic)
+  console.log('2. Ignorar ' + '(Puxar o cabo da rede e tentar sozinho)'.italic)
+  console.log('3. Esbarrar no teclado ' + '(Pânico total)'.italic)
 
-    console.log("1. Responder")
-    console.log("2. Ignorar")
-    console.log("3. Esbarrar no teclado")
-
-    let opcao = prompt("Escolha: ")
-
-    switch (opcao) {
-        case '1':
-            pontos++
-            console.log("✅ Contato feito".green)
-            encontro()
-            break
-
-        case '2':
-            pontos--
-            console.log("❌ Ignorou...".red)
-            tentarSozinho()
-            break
-
-        case '3':
-            let sorte = Math.random() * 2
-            if (sorte > 1) {
-                console.log("📞 Encontro marcado".yellow)
-                encontro()
-            } else {
-                console.log("⚠️ Indo sozinho...".yellow)
-                tentarSozinho()
-            }
-            break
-    }
+  let opcao = prompt('Qual sua resposta? ')
+  switch (opcao) {
+    case '1':
+      pontos++
+      inventario.push('Contato do Grupo Sombra')
+      console.log(`\n"Amigos do progresso,"`.cyan + ` eles dizem. ` + `"Vá até o fliperama abandonado. AGORA!"`.bold)
+      encontro()
+      break
+    case '2':
+      pontos--
+      console.log(`\nVocê decide que não confia em estranhos. O silêncio no escritório é assustador.`.gray)
+      tentarSozinho()
+      break
+    case '3':
+      if (Math.random() * 2 > 1) {
+        console.log(`\nNo susto, você envia um emoji de 'joinha'. Eles riem: ` + `"Gostamos do seu estilo. Nos encontre!"`.green)
+        encontro()
+      } else {
+        console.log(`\nVocê derruba café no servidor. Agora o sistema está instável e você está só.`.red)
+        tentarSozinho()
+      }
+      break
+  }
 }
 
-// ================= CENA 3 =================
 function encontro() {
-    console.log("\n=== ENCONTRO ===".cyan)
+  console.log('\n' + '=== CENA 3: O ENCONTRO NO FLIPERAMA ==='.bold.cyan)
+  console.log(`${nome} entra na loja abandonada. O cheiro de ozônio é forte. Figuras encapuzadas se aproximam...`)
 
-    let sorte = Math.random() * 2
-
-    if (sorte > 1) {
-        console.log("✅ Não era armadilha!".green)
-        hackeando()
-    } else {
-        console.log("💀 Era uma armadilha!".red)
-        gameOver()
-    }
-}
-
-// ================= MINIGAME (151 FIXO) =================
-function hackeando() {
-    console.log("\n=== HACKEANDO A NASA ===".cyan)
-    console.log("🔐 Descubra o código secreto...".yellow)
-
-    let numeroSecreto = 151
-    let acertou = false
-
-    for (let i = 0; i < 3; i++) {
-        let tentativa = Number(prompt("Digite o código: "))
-
-        if (tentativa === numeroSecreto) {
-            console.log("✅ ACESSO LIBERADO!".green)
-            acertou = true
-            break
-        } 
-        else if (tentativa > numeroSecreto) {
-            console.log("📉 Muito alto!".yellow)
-        } 
-        else {
-            console.log("📈 Muito baixo!".yellow)
-        }
-    }
-
-    if (acertou) {
-        finalVitoria()
-    } else {
-        console.log("🚨 Acesso negado!".red)
-        gameOver()
-    }
-}
-
-// ================= SOLO =================
-function tentarSozinho() {
-    console.log("\n=== TENTANDO SOZINHO ===".cyan)
-    console.log("💀 Sistema detectou invasão!".red)
+  if (Math.random() * 2 > 1) {
+    console.log('\nO Grupo Sombra é real! Eles te entregam um pendrive de titânio. '.green + '+1 ponto'.bold.green)
+    inventario.push('Pendrive do Grupo Sombra')
+    pontos++
+    hackeandoSistema()
+  } else {
+    console.log('\nERRO: AS LUZES SE ACENDEM! '.red.bold + 'Não são hackers, é a Polícia Federal!')
     gameOver()
+  }
 }
 
-// ================= FINAL =================
-function finalVitoria() {
-    console.log("\n🎉 FINAL".green)
-    console.log("Você hackeou a NASA!\n".green)
+function tentarSozinho() {
+  console.log('\n' + '=== CAMINHO SOLO: O LOBO SOLITÁRIO ==='.bold.yellow)
+  console.log(`${nome} se esconde no porão com um script de 'brute-force' caseiro.`)
 
-    console.log(("Pontuação: " + pontos).yellow)
+  if (Math.random() * 2 > 1) {
+    console.log('\nIncrível! '.green + 'Você achou uma "backdoor" deixada por um estagiário dos anos 90! ' + '+1 ponto'.green)
+    pontos++
+    hackeandoSistema()
+  } else {
+    console.log('\nUm alerta vermelho pisca: ' + '"IP RASTREADO"'.red.bold + '. Você foi cercado antes do primeiro comando.')
+    gameOver()
+  }
+}
 
-    if (pontos >= 3) {
-        console.log("🔥 ACESSO LIBERADO".green)
-        console.log("Você desbloqueou a OPERAÇÃO SOMBRA 2.0!".yellow)
+function hackeandoSistema() {
+  console.log('\n' + '=== CENA 4: DENTRO DO MAINFRAME DA NASA ==='.bold.magenta)
+  console.log('As sirenes estão próximas. O sistema pede o ' + 'Protocolo de Emergência (149 a 151)'.bold + '!')
+
+  let numeroSecreto = 151
+  let acertou = false
+
+  for (let i = 0; i < 3; i++) {
+    let tentativa = Number(prompt(`Tentativa ${i + 1}/3 - Digite o código (149-151): `))
+    if (tentativa === numeroSecreto) {
+      acertou = true
+      break
     } else {
-        console.log("⚠️ Você conseguiu, mas não desbloqueou o nível 2.0".yellow)
+      console.log('ACESSO NEGADO! '.red + `Tentativas restantes: ${2 - i}`)
     }
+  }
 
-    console.log("\nFim de jogo.".cyan)
+  if (acertou) {
+    pontos++
+    finalVitoria()
+  } else {
+    console.log(`\nO código era ${numeroSecreto}. `.red + 'O mainframe fritou seu modem!'.bold.red)
+    gameOver()
+  }
 }
 
-// ================= START =================
+// ============================================================
+// FINAL
+// ============================================================
+
+function finalVitoria() {
+  bannerVitoria()
+  console.log(`Com o ` + `${inventario.join(' e ')}`.cyan + `, a NASA ficou no escuro.`)
+  console.log(`Pontuação final: ` + `${pontos}`.green.bold + ` | Status: ` + `MAIS PROCURADO DO MUNDO`.red.bold)
+  console.log(`\nAs viaturas estão no bloco A. ${nome} pega a mochila e pula a janela...`)
+  bannerParte2()
+  console.log('1. Jogar novamente')
+  console.log('2. Sair')
+  let opcao = prompt('Escolha: ')
+  if (opcao === '1') {
+    pontos = 0
+    menuPrincipal()
+  } else {
+    sair()
+  }
+}
+
+// ============================================================
+// INICIA O JOGO
+// ============================================================
+
 menuPrincipal()
