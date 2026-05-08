@@ -224,7 +224,7 @@ function hackeandoSistema() {
   let acertou = false
 
   for (let i = 0; i < 3; i++) {
-    let tentativa = Number(prompt(`Tentativa ${i + 1}/3 - Digite o código (149-151): `))
+    let tentativa = Number(prompt(`Tentativa ${i + 1}/3 - Digite o código (0-151): `))
     if (tentativa === numeroSecreto) {
       acertou = true
       break
